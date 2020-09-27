@@ -37,7 +37,6 @@ public class Rook extends Piece {
     @Override
     //TODO   REVIEW FOR BUGS OR ANYTHING MISSING
     public Collection<Moves> CalculateLegalMoves(Board board) {
-        System.out.println(color);
         Collection<Moves> legalMoves= new ArrayList<>();
         for (int direction : POSSIBLE_DIRECTIONS) {
             int possibleMove = getPieceCoordinate() + direction;

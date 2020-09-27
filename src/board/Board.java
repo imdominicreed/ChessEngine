@@ -29,10 +29,12 @@ public class Board {
 
     public void doMove(Moves move) {
         Piece piece = move.square.getPiece();
+        board[piece.PieceCoordinate] = createSquare(null);
         piece.setPieceCoordinate(move.getAttackingCoord());
         piece.pieceMoved = true;
+
         board[move.attackingCoord] = Square.createSquare(piece);
-        board[piece.PieceCoordinate] = createSquare(null);
+
     }
 
     public Square getSquare(int squareCoordinate) {

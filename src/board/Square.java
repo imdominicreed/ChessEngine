@@ -21,7 +21,7 @@ public abstract class Square {
 
         }
         @Override
-        public  boolean isOccupied() {
+        public boolean isOccupied() {
             return false;
         }
 
