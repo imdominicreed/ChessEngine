@@ -6,6 +6,7 @@ import au.com.anthonybruno.lichessclient.LichessClient;
 import au.com.anthonybruno.lichessclient.handler.GameEventHandler;
 import au.com.anthonybruno.lichessclient.handler.UserEventHandler;
 import au.com.anthonybruno.lichessclient.model.event.GameStart;
+import board.Board;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import engine.Engine;
 

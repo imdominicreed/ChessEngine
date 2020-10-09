@@ -23,6 +23,7 @@ public class Engine {
     int whitePosition;
     int depth;
     Color color;
+    boolean doneCalculating;
     HashMap<String, Integer> numberOfMoves;
     Node root;
     Node current;
@@ -33,11 +34,11 @@ public class Engine {
         numberOfMoves = new HashMap<>();
         root = new Node();
         current = root;
+        doneCalculating = false;
     }
     public boolean createTree() throws IOException {
 
         FileReader fileReader = new FileReader("C:\\Users\\domin\\IdeaProjects\\ChessEngine\\src\\main\\java\\board\\openings.txt");
-
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         while (true) {
             Node current = root;
@@ -46,16 +47,20 @@ public class Engine {
                 break;
             }
             String[] moves = line.split(" ");
+            boolean counter = false;
             for (String move : moves){
-                current.putIfAbsent(move, new Node());
-                current = current.get(move);
+                if (counter && color.toString().toLowerCase().equals(moves[0])) {
+                    current.putIfAbsent(move, new Node());
+                    current = current.get(move);
+                }
+                counter = true;
             }
         }
         return true;
     }
     class Node extends HashMap<String, Node>{
     }
-    public String[] moveParser() throws IOException {
+    public void moveParser() throws IOException {
         FileReader fileReader = new FileReader("C:\\Users\\domin\\IdeaProjects\\ChessEngine\\src\\main\\java\\board\\games.csv");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         bufferedReader.readLine();
@@ -64,15 +69,10 @@ public class Engine {
         int mistakes = 0;
         while (true) {
             counter++;
-            String line = bufferedReader.readLine();
-            if (line.equals("")) {
-                break;
-            }
-            line = line.substring(line.lastIndexOf(',', line.lastIndexOf(',', line.lastIndexOf(',', line.lastIndexOf(',') - 1) - 1) - 1) + 1,
-                    line.lastIndexOf(',', line.lastIndexOf(',', line.lastIndexOf(',') - 1) - 1));
+            String[] entireLine = bufferedReader.readLine().split(",");
             BoardGame bg = game.clone();
             boolean didMoves = true;
-            String[] lines = line.split(" ");
+            String[] lines = entireLine[12].split(" ");
             smith = new String[lines.length];
             String answer = "";
             for (int j = 0; j < lines.length; j++) {
@@ -118,17 +118,15 @@ public class Engine {
             File movetext = new File("C:\\Users\\domin\\IdeaProjects\\ChessEngine\\src\\main\\java\\board\\openings.txt");
             FileWriter fileWriter = new FileWriter(movetext, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(answer);
+            bufferedWriter.write(entireLine[6] + " " + answer);
             bufferedWriter.newLine();
             bufferedWriter.close();
             fileWriter.close();
 
         }
-        System.out.println(mistakes);
-        return smith;
     }
     public Moves checkTree(){
-        if (!current.isEmpty()){
+        if (!current.isEmpty() && !doneCalculating){
             int counter = 0;
             int random = (int) (Math.random() * current.size());
             for (String key: current.keySet()) {
@@ -138,6 +136,7 @@ public class Engine {
                 counter++;
             }
         }
+        doneCalculating = true;
         return null;
     }
     public Moves calculateMove() {
@@ -153,6 +152,7 @@ public class Engine {
         }
     }
     public Moves getBestMove() {
+        doneCalculating = true;
         int bestPosition = -Integer.MAX_VALUE;
         Moves bestMoves = null;
         Collection<Moves> moves = game.getPlayerTurn().getLegalMoves();
@@ -191,12 +191,19 @@ public class Engine {
         int nextDepth = depthMachine + 1;
         int position = Integer.MAX_VALUE;
         Collection<Moves> moves = game.getPlayerTurn().getLegalMoves();
+        if (moves.size() == 0) {
+            if (game.colorTurn == color) {
+                return -9000;
+            } else{
+                return 9000;
+            }
+        }
         for (Moves move : moves) {
             BoardGame bg = game.clone();
             try {
-
                 bg.doEngineMove(move);
             } catch (NullPointerException noKING) {
+                System.out.println("THIS CALCULATION DOESNT CONTAIN KING!");
                 if (game.colorTurn == color) {
                     position += 900;
                 } else {
