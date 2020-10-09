@@ -56,22 +56,19 @@ public class BoardGame {
                 if (line.equals(move.toString()))
                     return move;
             }
-        try{
-            throw new IOException();
-        } catch (IOException e) {
-            System.out.println(line + " is not a legal MOVE!");
-        }
         return null;
     }
     public void doEngineMove(Moves move) {
         board.doMove(move);
         nextColor();
+        board.getRidOfEmpasants(colorTurn);
     }
     public void doMove(String stringMove) {
         Moves move = moveParser(stringMove, getPlayerTurn().getLegalMoves());
         nextColor();
         System.out.println(move.toString());
         board.doMove(move);
+        board.getRidOfEmpasants(colorTurn);
         printGame();
     }
 

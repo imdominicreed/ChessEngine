@@ -56,11 +56,11 @@ public class Bishop extends Piece{
                     if(square.getPiece().color == this.color) {
                         break;
                     } else {
-                        legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                        legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove, true));
                         break;
                     }
                 } else {
-                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove,false));
                 }
                 possibleMove = possibleMove + direction;
             }

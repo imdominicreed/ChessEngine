@@ -33,21 +33,39 @@ public final class Board {
         //TODO: THROW NO KING ERROR
         return null;
     }
-
+    public void getRidOfEmpasants(Color color) {
+        for (int i = 0; i < 64; i++) {
+            if (getSquare(i).isOccupied()) {
+                if (getSquare(i).getPiece().getPieceType() == PieceType.PAWN && getSquare(i).getPiece().color == color) {
+                    Pawn pawn = (Pawn) getSquare(i).getPiece();
+                    pawn.setJumped(false);
+                }
+            }
+        }
+    }
     public void doMove(Moves move) {
         if (move.isCastle()) {
             Moves.Castling castling = (Moves.Castling) move;
-            King king = (King) castling.square.getPiece();
-            board[king.getKingCoord()] = createSquare(null);
-            board[63] = createSquare(null);
-            board[castling.rook.getPieceCoordinate()] = createSquare(castling.rook.clone());
-            castling.square.getPiece().setPieceCoordinate(castling.attackingCoord);
-            board[castling.attackingCoord] = createSquare(castling.square.getPiece().clone());
+            board[castling.getAttackingCoord()] = createSquare(castling.getSquare().getPiece());
+            board[castling.getSquare().getPiece().getPieceCoordinate()] = createSquare(null);
+            castling.getSquare().getPiece().setPieceCoordinate(castling.attackingCoord);
+            board[castling.rook.getPieceCoordinate()] = createSquare(null);
+            board[castling.rookCoord] = createSquare(castling.rook);
+            castling.rook.setPieceCoordinate(castling.rookCoord);
+
         }
         Piece piece = move.square.getPiece().clone();
         board[piece.PieceCoordinate] = createSquare(null);
         piece.setPieceCoordinate(move.getAttackingCoord());
         piece.pieceMoved = true;
+        if (move.isJump()) {
+            Pawn pawn = (Pawn) piece;
+            pawn.setJumped(true);
+        }
+        if (move.isPassant()) {
+            Moves.Passant passant = (Moves.Passant)   move;
+            board[passant.pawn] = createSquare(null);
+        }
         if (move.isPromotion()) {
             Moves.Promotion promo = (Moves.Promotion) move;
             board[move.attackingCoord] = createSquare(promo.promotingPiece());

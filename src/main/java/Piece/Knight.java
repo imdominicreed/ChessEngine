@@ -53,11 +53,11 @@ public class Knight extends Piece {
             Square moveSquare = board.getSquare(possibleMove);
             if (!moveSquare.isOccupied()) {
                 //TODO NO CLUE WHAT I AM DOING
-                legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove,false));
             } else {
                 if(moveSquare.getPiece().color != this.color) {
                     //TODO THIS IS A CAPUTUE IMPROVE
-                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove,true));
                 }
             }
 

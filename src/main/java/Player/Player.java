@@ -7,6 +7,7 @@ import board.Board;
 import board.CloneBoard;
 import board.Moves;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +18,11 @@ public class Player {
     public Board board;
     public Color oppositeColor;
     Color color;
+
     public Player clone(Board newboard) {
         return new Player(newboard, color);
     }
+
     public Player(Board board, Color color) {
 
         this.board = board;
@@ -46,50 +49,50 @@ public class Player {
             if (board.getSquare(56).isOccupied()) {
                 try {
                     Rook rook = (Rook) board.getSquare(56).getPiece();
-                if (isSquareNotCheckedOccupied(58) && isSquareNotCheckedOccupied(59) && !rook.isPieceMoved()) {
-                    rook = (Rook) rook.clone();
-                    moves.add(new Moves.Castling(board.getSquare(60).clone(), 58, rook));
-                }
-            } catch (ClassCastException ignored) {
-                }
-            }
-            if (board.getSquare(63).isOccupied()) {
-               //TODO: THROW CATCH
-                try {
-                Rook rook = (Rook) board.getSquare(63).getPiece();
-                if (isSquareNotCheckedOccupied(62) && isSquareNotCheckedOccupied(61) && !rook.isPieceMoved()) {
-                    rook = (Rook) rook.clone();
-                    moves.add(new Moves.Castling(board.getSquare(60).clone(), 62, rook));
-
-                }
+                    if (isSquareNotCheckedOccupied(58) && isSquareNotCheckedOccupied(59) && !rook.isPieceMoved()) {
+                        rook = (Rook) rook.clone();
+                        moves.add(new Moves.Castling(board.getSquare(60).clone(), 58, rook, 59));
+                    }
                 } catch (ClassCastException ignored) {
                 }
             }
-            } else {
-
-                if (board.getSquare(0).isOccupied()) {
-                    try {
-                    Rook rook = (Rook) board.getSquare(0).getPiece();
-                    if (isSquareNotCheckedOccupied(3) && isSquareNotCheckedOccupied(2) &&! rook.isPieceMoved()) {
+            if (board.getSquare(63).isOccupied()) {
+                //TODO: THROW CATCH
+                try {
+                    Rook rook = (Rook) board.getSquare(63).getPiece();
+                    if (isSquareNotCheckedOccupied(62) && isSquareNotCheckedOccupied(61) && !rook.isPieceMoved()) {
                         rook = (Rook) rook.clone();
-                        moves.add(new Moves.Castling(board.getSquare(4).clone(), 2, rook));
+                        moves.add(new Moves.Castling(board.getSquare(60).clone(), 62, rook, 61));
+
                     }
-                } catch (ClassCastException ignored) { ;
+                } catch (ClassCastException ignored) {
                 }
+            }
+        } else {
+
+            if (board.getSquare(0).isOccupied()) {
+                try {
+                    Rook rook = (Rook) board.getSquare(0).getPiece();
+                    if (isSquareNotCheckedOccupied(3) && isSquareNotCheckedOccupied(2) && !rook.isPieceMoved()) {
+                        rook = (Rook) rook.clone();
+                        moves.add(new Moves.Castling(board.getSquare(4).clone(), 2, rook, 3));
+                    }
+                } catch (ClassCastException ignored) {
+                    ;
                 }
-                if (board.getSquare(7).isOccupied()) {
-                    try {
+            }
+            if (board.getSquare(7).isOccupied()) {
+                try {
                     Rook rook = (Rook) board.getSquare(7).getPiece();
                     if (isSquareNotCheckedOccupied(5) && isSquareNotCheckedOccupied(6) && !rook.isPieceMoved()) {
                         rook = (Rook) rook.clone();
-                        rook.setPieceCoordinate(5);
-                        moves.add(new Moves.Castling(board.getSquare(4).clone(), 6, rook));
+                        moves.add(new Moves.Castling(board.getSquare(4).clone(), 6, rook, 5));
                     }
-                    } catch (ClassCastException ignored) {
-                        }
-
+                } catch (ClassCastException ignored) {
                 }
+
             }
+        }
 
         return moves;
     }
@@ -117,7 +120,7 @@ public class Player {
             }
         }
         possibleMoves.removeAll(toRemove);
-      //possibleMoves.addAll(getCastling());
+        possibleMoves.addAll(getCastling());
         return possibleMoves;
 
     }
@@ -132,8 +135,13 @@ public class Player {
     }
 
     public boolean isKingChecked(Board board) {
-        King king = board.getKing(this.color);
-        return isSquareChecked(king.getKingCoord(), board);
+        try {
+            King king = board.getKing(this.color);
+            return isSquareChecked(king.getKingCoord(), board);
+        } catch (NullPointerException e){
+            System.out.println("ERROR");
+            return false;
+        }
     }
 
 

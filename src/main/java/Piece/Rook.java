@@ -51,11 +51,11 @@ public class Rook extends Piece {
                 }
                 if(square.isOccupied()) {
                     if (square.getPiece().color != this.color) {
-                        legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                        legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove,true));
                     }
                     break;
                 } else {
-                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove));
+                    legalMoves.add(new Moves(board.getSquare(PieceCoordinate), possibleMove,false));
                 }
                 possibleMove = possibleMove + direction;
             }

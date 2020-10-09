@@ -9,6 +9,7 @@ import au.com.anthonybruno.lichessclient.model.event.GameStart;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import engine.Engine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,8 +27,7 @@ public class LichessBoardComm extends Thread {
         clientGame = new BoardGame();
     }
 
-    public static void main(String[] args) {
-        System.out.println(PieceType.KING.getValue());
+    public static void main(String[] args) throws IOException {
         while (true) {
             LichessBoardComm api = new LichessBoardComm();
             lichessClient.streamIncomingEvents(api.incoming);
@@ -68,8 +68,14 @@ public class LichessBoardComm extends Thread {
             } else  {
                 engine = new Engine(clientGame, 4, Color.BLACK);
             }
+            try {
+                engine.createTree();
+            } catch (IOException e) {
+                System.out.println("could not create Tree");
+            }
             if (!moveList[0].equals("")) {
                 for (String s : moveList) {
+                    engine.doOppenentMove(s);
                     clientGame.doMove(s);
                     System.out.println(s);
                 }
@@ -93,6 +99,7 @@ public class LichessBoardComm extends Thread {
             if (!moveList[moveList.length - 1].equals(lastMove)) {
                 try {
                     clientGame.doMove(moveList[moveList.length - 1]);
+                    engine.doOppenentMove(moveList[moveList.length-1]);
                     lastMove = engine.calculateMove().toString();
                     clientGame.doMove(lastMove);
                     lichessClient.makeMove(id, lastMove);
