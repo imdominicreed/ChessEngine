@@ -3,7 +3,7 @@
 
 How to run
  
- You can make a bot account on Lichess and put in your API key, or you can go on Lichess and challenge my bot.
+ You can make a bot account on Lichess and put in your API key, or you can go on Lichess and challenge my bot on lichess dominicreedbot.
   
 How it is made
    
