@@ -4,7 +4,7 @@ import Piece.Color;
 import Piece.King;
 import Piece.Rook;
 import board.Board;
-import board.CloneBoard;
+
 import board.Moves;
 
 import java.io.IOException;

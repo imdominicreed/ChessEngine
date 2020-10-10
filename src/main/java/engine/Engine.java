@@ -198,6 +198,7 @@ public class Engine {
                 return 9000;
             }
         }
+        //test
         for (Moves move : moves) {
             BoardGame bg = game.clone();
             try {
