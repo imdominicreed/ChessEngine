@@ -27,6 +27,7 @@ public class Engine {
     HashMap<String, Integer> numberOfMoves;
     Node root;
     Node current;
+
     public Engine(BoardGame game, int depth, Color color) {
         this.color = color;
         this.game = game;
@@ -36,6 +37,7 @@ public class Engine {
         current = root;
         doneCalculating = false;
     }
+
     public boolean createTree() throws IOException {
 
         FileReader fileReader = new FileReader("C:\\Users\\domin\\IdeaProjects\\ChessEngine\\src\\main\\java\\board\\openings.txt");
@@ -48,7 +50,7 @@ public class Engine {
             }
             String[] moves = line.split(" ");
             boolean counter = false;
-            for (String move : moves){
+            for (String move : moves) {
                 if (counter && color.toString().toLowerCase().equals(moves[0])) {
                     current.putIfAbsent(move, new Node());
                     current = current.get(move);
@@ -58,8 +60,10 @@ public class Engine {
         }
         return true;
     }
-    class Node extends HashMap<String, Node>{
+
+    class Node extends HashMap<String, Node> {
     }
+
     public void moveParser() throws IOException {
         FileReader fileReader = new FileReader("C:\\Users\\domin\\IdeaProjects\\ChessEngine\\src\\main\\java\\board\\games.csv");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -78,7 +82,7 @@ public class Engine {
             for (int j = 0; j < lines.length; j++) {
                 if (!didMoves) {
                     mistakes++;
-                    System.out.println(counter+ " " + mistakes + " " + lines[j-1]);
+                    System.out.println(counter + " " + mistakes + " " + lines[j - 1]);
                     break;
                 }
                 if (lines[j].contains("+")) {
@@ -98,7 +102,7 @@ public class Engine {
                     if ((lines[j].length() == 4 && !lines[j].contains("x")) || (lines[j].length() == 5 && lines[j].contains("x")) || (Character.isLowerCase(lines[j].charAt(0)) && lines[j].contains("x"))) {
                         if (Character.isDigit(lines[j].charAt(1))) {
                             includeNumber = true;
-                        } else if(lines[j].length() == 6 && lines[j].contains("x")){
+                        } else if (lines[j].length() == 6 && lines[j].contains("x")) {
                             includeLetter = true;
                             includeNumber = true;
                         } else {
@@ -125,12 +129,13 @@ public class Engine {
 
         }
     }
-    public Moves checkTree(){
-        if (!current.isEmpty() && !doneCalculating){
+
+    public Moves checkTree() {
+        if (!current.isEmpty() && !doneCalculating) {
             int counter = 0;
             int random = (int) (Math.random() * current.size());
-            for (String key: current.keySet()) {
-                if (counter == random){
+            for (String key : current.keySet()) {
+                if (counter == random) {
                     return game.moveParser(key, game.getPlayerTurn().getLegalMoves());
                 }
                 counter++;
@@ -139,6 +144,7 @@ public class Engine {
         doneCalculating = true;
         return null;
     }
+
     public Moves calculateMove() {
         Moves move = checkTree();
         if (move != null) {
@@ -146,11 +152,13 @@ public class Engine {
         }
         return getBestMove();
     }
+
     public void doOppenentMove(String move) {
         if (current.containsKey(move)) {
             current = current.get(move);
         }
     }
+
     public Moves getBestMove() {
         doneCalculating = true;
         int bestPosition = -Integer.MAX_VALUE;
@@ -194,23 +202,14 @@ public class Engine {
         if (moves.size() == 0) {
             if (game.colorTurn == color) {
                 return -9000;
-            } else{
+            } else {
                 return 9000;
             }
         }
         //test
         for (Moves move : moves) {
             BoardGame bg = game.clone();
-            try {
-                bg.doEngineMove(move);
-            } catch (NullPointerException noKING) {
-                System.out.println("THIS CALCULATION DOESNT CONTAIN KING!");
-                if (game.colorTurn == color) {
-                    position += 900;
-                } else {
-                    position -= 900;
-                }
-            }
+            bg.doEngineMove(move);
             //SAME COLOR
             if (game.colorTurn == color) {
                 if (position == Integer.MAX_VALUE) {
